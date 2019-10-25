@@ -9,5 +9,14 @@ git config --local user.email her_email
 
 usa estas 
 nombre: Julian
+username: juliangarnica98
 email: juliang1012@gmail.com
 pass: Julian981012
+
+y con esto haces push
+
+git push https://username:password@myrepository.biz/repo.git --all 
+
+Example
+
+git push https://riesgoba:Millos0225@github.com/juliangarnica98/ProyectoIngSof.git --all

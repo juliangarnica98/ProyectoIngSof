@@ -20,3 +20,7 @@ git push https://username:password@myrepository.biz/repo.git --all
 Example
 
 git push https://riesgoba:Millos0225@github.com/juliangarnica98/ProyectoIngSof.git --all
+
+Instalar por requirements
+
+pip install -r requirements.txt

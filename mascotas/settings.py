@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'clear_cache',
     'apps.authenticate',
     'apps.core',
+    'apps.colaborator',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'mascotas',
         'USER': 'postgres',
-        'PASSWORD': '123456',
+        'PASSWORD': 'Cristian2620',
         'HOST': 'localhost',
         'PORT': '5432'
     }

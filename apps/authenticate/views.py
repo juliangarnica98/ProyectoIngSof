@@ -7,7 +7,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse_lazy, reverse
 
 
-
 class LoginView(FormView):
     form_class = AuthenticationForm
     template_name = "authenticate/login.html"
@@ -36,7 +35,8 @@ class LoginView(FormView):
         if str(nextPage) != "None":
             return nextPage
         else:
-            return reverse_lazy("colaborator:home")
+            if self.request.user.groups.filter(name="collaborators").exists():
+                return reverse_lazy("colaborator:home")
             
 class LogoutView(RedirectView):
     pattern_name = 'core:home'

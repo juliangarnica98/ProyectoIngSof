@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'clear_cache',
     'apps.authenticate',
     'apps.core',
-    'apps.colaborator'
+    'apps.colaborator',
+    'apps.customer',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,59 @@
+{% extends "colaborator/base.html" %}
+{% load static %}
+{% load humanize %}
+{% load utilities %}
+{% block styles %}
+<link href="{% static '/css/colaborator.css' %}" rel="stylesheet">
+{% endblock styles %}
+{% block content %}
+      <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">Asignando servicios</li>
+        </ol>
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-plus-square"></i> Asignar servicio
+            </div>
+          <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{form.as_p}}
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </form>
+          </div>
+          <div class="card-footer small text-muted">Actualizado {{time}}</div>
+        </div>
+      </div>
+{% endblock content %}
+
+{% block scripts %}
+<!-- Core plugin JavaScript-->
+<script src="{% static '/js/jquery-easing/jquery.easing.min.js' %}"></script>
+
+<!-- Page level plugin JavaScript-->
+<script src="{% static '/js/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static '/js/datatables/dataTables.bootstrap4.js' %}"></script>
+
+
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin/sb-admin.min.js' %}"></script>
+<script>
+  var ejeX = []
+  var ejeY = []
+  var may = 0
+  {% for gain in dataGraphic %}
+    var val = {{ gain.1 }}
+    ejeX.push("{{ gain.0|date:'D d M' }}")
+    ejeY.push(val)
+    if (may < val){
+      may = val;
+    }
+  {% endfor %}
+</script>
+<!-- Demo scripts for this page-->
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock scripts %}

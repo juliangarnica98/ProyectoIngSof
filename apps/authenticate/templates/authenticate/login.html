@@ -56,11 +56,7 @@
                  {% if form.errors %}
                     <div class="alert alert-danger">
                         <button type="button" class="close" data-dismiss="alert">×</button>
-                        {% for field in form %}
-                            {% if field.errors %}
-                                {{ field.errors|striptags }}
-                            {% endif %}
-                        {% endfor %}
+                        {{ form.non_field_errors |striptags }}
                     </div>
                 {% endif %}
                 <div class="card card-signin my-5">

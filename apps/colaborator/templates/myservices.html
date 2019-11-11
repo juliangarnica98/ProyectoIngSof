@@ -1,0 +1,114 @@
+{% extends "colaborator/base.html" %}
+{% load static %}
+{% load humanize %}
+{% load utilities %}
+{% block styles %}
+<link href="{% static '/css/colaborator.css' %}" rel="stylesheet">
+{% endblock styles %}
+{% block content %}
+      <div class="container-fluid">
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">Mis servicios</li>
+        </ol>
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-handshake"></i> Servicios prestados
+            </div>
+          <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="thead-default">
+                        <tr>
+                            <th>#</th>
+                            <th>Servicio</th>
+                            <th>Descripción</th>
+                            <th>Tipo de cobro</th>
+                            <th>Tarifa</th>
+                            <th>Ciudad</th>
+                            <th colspan="2">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in object_list %}
+                        <tr>
+                            <th scope="row">{{ service.id }}</th>
+                            <td>{{ service.service.name }}</td>
+                            <td>{{ service.description }}</td>
+                            <td>{{ typePay|get_item:service.rate_type }}</td>
+                            <td>{{ service.rate }}</td>
+                            <td>{{ service.coverage_city }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="8"><a href="{% url 'colaborator:assingservice' %}"><button class="btn btn-primary">Asociarme un nuevo servicio</button></a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="8"><b>Nota:</b> Si considera que se puede prestar un servicio y usted desea sea incluido para que lo pueda registrar y prestar, por favor envie un correo con una breve descripcion a <a href="mailto:admin@dogenest.com">admin@dogenest.com</a> </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="row text-rigth">
+                <div class="col-1 offset-11">
+                    <nav aria-label="Page navigation example">
+                    {% if is_paginated %}
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                            {% endif %}
+
+                            {% for i in paginator.page_range %}
+                                <li {% if page_obj.number == i %} class="active" {% endif %} class="page-item">
+                                    <a class="page-link" href="?page={{i}}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li><a class="page-link" href="?page={{ page_obj.next_page_number }}" class="page-item">&raquo;</a></li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                    </nav>
+                </div>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">Actualizado {{time}}</div>
+        </div>
+      </div>
+{% endblock content %}
+
+{% block scripts %}
+<!-- Core plugin JavaScript-->
+<script src="{% static '/js/jquery-easing/jquery.easing.min.js' %}"></script>
+
+<!-- Page level plugin JavaScript-->
+<script src="{% static '/js/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static '/js/datatables/dataTables.bootstrap4.js' %}"></script>
+
+
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin/sb-admin.min.js' %}"></script>
+<script>
+  var ejeX = []
+  var ejeY = []
+  var may = 0
+  {% for gain in dataGraphic %}
+    var val = {{ gain.1 }}
+    ejeX.push("{{ gain.0|date:'D d M' }}")
+    ejeY.push(val)
+    if (may < val){
+      may = val;
+    }
+  {% endfor %}
+</script>
+<!-- Demo scripts for this page-->
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock scripts %}

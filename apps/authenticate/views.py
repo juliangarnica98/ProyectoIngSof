@@ -32,12 +32,13 @@ class LoginView(FormView):
 
     def get_success_url(self):
         nextPage = self.request.POST.get('next')
-        if str(nextPage) != "None":
+        if nextPage is not None and nextPage != "None":
             return nextPage
         else:
             if self.request.user.groups.filter(name="collaborators").exists():
                 return reverse_lazy("colaborator:home")
-            
+            else:
+                return reverse_lazy("customer:home")
 class LogoutView(RedirectView):
     pattern_name = 'core:home'
 

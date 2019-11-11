@@ -1,4 +1,3 @@
-Crispeta
 Ademas del python manage.py migrate por favor ejecuta,
 python manage.py loaddata apps/authenticate/fixtures/groups.json con eso se deberan crear los dos grupos en la base de datos.
 

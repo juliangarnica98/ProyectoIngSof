@@ -51,8 +51,13 @@ class ServicePerColaborator(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     colaborator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['service', 'colaborator'], name='colaborator_x_service')
+        ]
+
     def __str__(self):
-        return "%s prestado por %s" % self.service.name, self.colaborator.name
+        return "Proveedor: %s Servicio:%s" % (self.colaborator,self.service)
 
 class Profile(models.Model):
     DOC_TYPES = [

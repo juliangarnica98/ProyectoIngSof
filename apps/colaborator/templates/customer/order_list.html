@@ -1,0 +1,158 @@
+{% extends "colaborator/base.html" %}
+{% load static %}
+{% load humanize %}
+{% load utilities %}
+{% block styles %}
+<link href="{% static '/css/colaborator.css' %}" rel="stylesheet">
+{% endblock styles %}
+{% block content %}
+    <div class="container-fluid">
+
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">Ordenes</li>
+        </ol>
+
+        <!-- DataTables Example -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+            {{titleTable}}</div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered dt-responsive nowrap" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Status</th>
+                     <th>Servicio</th>
+                    <th>Agendada</th>
+                    <th>Fecha finalización</th>
+                    <th>Precio</th>
+                    <th>Tu ganancia</th>
+                    <th>Puntuación</th>
+                    <th>Info</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>ID</th>
+                    <th>Status</th>
+                     <th>Servicio</th>
+                    <th>Agendada</th>
+                    <th>Fecha finalización</th>
+                    <th>Precio</th>
+                    <th>Tu ganancia</th>
+                    <th>Puntuación</th>
+                    <th>Info</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  {% for service in object_list %}
+                  <tr>
+                    <td>{{ service.id }}</td>
+                    <td>
+                      {{ status|get_item:service.status }}
+                      {% if service.status == 'request' %}
+                      <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ service.id }}"/>
+                        <button class="btn btn-success" name="status" value="accepted"><i class="fas fa-fw fa-check"></i></button>
+                        <button class="btn btn-danger" name="status" value="rejected"><i class="fas fa-fw fa-times"></i></button>
+                      </form>
+                      {% endif %}
+                    </td>
+                    <td>{{ service.service.service.name }}</td>
+                    <td>{{ service.datetime_booking|date:"D d M Y H:i:s" }}</td>
+                    <td>{{ service.datetime_finally|date:"D d M Y H:i:s" }}</td>
+                    <td>$ {{ service.price|intcomma }}</td>
+                    {% if service.status == 'finalized' %}
+                    <td>$ {{ service.payColaborator|intcomma }}</td>
+                    {% else %}
+                    <td>----------</td>
+                    {% endif %}
+                    {% if service.status == 'finalized' %}
+                    <td>
+                      <div class="rating">
+                        <input type="radio" id="{{ service.id }}star5" name="rating{{ service.id }}" value="5" {% if service.score == 5 %}checked{% endif %}  disabled="disabled"/><label for="star5" title="Cinco estrellas">5 stars</label>
+                        <input type="radio" id="{{ service.id }}star4" name="rating{{ service.id }}" value="4" {% if service.score == 4 %}checked{% endif %}  disabled="disabled"/><label for="star4" title="Cuatro estrellas">4 stars</label>
+                        <input type="radio" id="{{ service.id }}star3" name="rating{{ service.id }}" value="3" {% if service.score == 3 %}checked{% endif %} disabled="disabled"/><label for="star3" title="Tres estrellas">3 stars</label>
+                        <input type="radio" id="{{ service.id }}star2" name="rating{{ service.id }}" value="2" {% if service.score == 2 %}checked{% endif %} disabled="disabled"/><label for="star2" title="Dos estrellas">2 stars</label>
+                        <input type="radio" id="{{ service.id }}star1" name="rating{{ service.id }}" value="1" {% if service.score == 1 %}checked{% endif %} disabled="disabled"/><label for="star1" title="Uno estrellas">1 star</label>
+                      </div>
+                    </td>
+                    {% else %}
+                    <td>----------</td>
+                    {% endif %}
+                    <td align="center">
+                      <a class="btn btn-primary" href="#" data-toggle="modal" data-target="#infoModal{{ forloop.counter }}"><i class="fas fa-fw fa-info-circle"></i>Info Cliente</a>
+                    </td>
+                  </tr>
+                  <div class="modal fade" id="infoModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Información de cliente</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                          </button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="container">
+                              <div class="row">
+                                <div class="col-6">
+                                    <img src="{{ service.pet.pet_image.url }}" alt="" class="img-rounded img-responsive" width="200" />
+                                </div>
+                                <div class="col-6">
+                                    <h4>{{ service.pet.name }}</h4>
+                                    <h6>{{ service.pet.edad }}</h6>
+                                    <h6>{{ service.pet.pet_type.name }}</h6>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer small text-muted">Actualizado {{time}}</div>
+        </div>
+
+      </div>
+      <!-- /.container-fluid -->
+{% endblock content %}
+
+{% block scripts %}
+<!-- Core plugin JavaScript-->
+<script src="{% static '/js/jquery-easing/jquery.easing.min.js' %}"></script>
+
+<!-- Page level plugin JavaScript-->
+<script src="{% static '/js/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static '/js/datatables/dataTables.bootstrap4.js' %}"></script>
+
+
+<!-- Custom scripts for all pages-->
+<script src="{% static 'js/sb-admin/sb-admin.min.js' %}"></script>
+<script>
+  var ejeX = []
+  var ejeY = []
+  var may = 0
+  {% for gain in dataGraphic %}
+    var val = {{ gain.1 }}
+    ejeX.push("{{ gain.0|date:'D d M' }}")
+    ejeY.push(val)
+    if (may < val){
+      may = val;
+    }
+  {% endfor %}
+</script>
+<!-- Demo scripts for this page-->
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+{% endblock scripts %}

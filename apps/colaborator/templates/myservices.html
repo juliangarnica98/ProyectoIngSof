@@ -19,6 +19,18 @@
             <i class="fas fa-handshake"></i> Servicios prestados
             </div>
           <div class="card-body">
+            {% if messages %}
+            <div class="row">
+              <div class="col-sm-12 col-md-8 offset-md-2">
+                  {% for message in messages %}
+                    <div class="alert alert-success">
+                      <button type="button" class="close" data-dismiss="alert">×</button>
+                      {{ message|striptags }}
+                    </div>
+                  {% endfor %}
+              </div>
+            </div>
+            {% endif %}
             <div class="table-responsive">
                 <table class="table">
                     <thead class="thead-default">
@@ -51,7 +63,7 @@
                             <td colspan="8"><a href="{% url 'colaborator:assingservice' %}"><button class="btn btn-primary">Asociarme un nuevo servicio</button></a></td>
                         </tr>
                         <tr>
-                            <td colspan="8"><b>Nota:</b> Si considera que se puede prestar un servicio y usted desea sea incluido para que lo pueda registrar y prestar, por favor envie un correo con una breve descripcion a <a href="mailto:admin@dogenest.com">admin@dogenest.com</a> </td>
+                            <td colspan="8"><b>Nota:</b> Si considera que puede prestar un nuevo servicio que no esta listado y desea proponerlo, por favor envie un correo con una breve descripción a <a href="mailto:admin@dogenest.com">admin@dogenest.com</a> </td>
                         </tr>
                     </tfoot>
                 </table>

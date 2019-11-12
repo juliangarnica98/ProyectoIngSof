@@ -11,6 +11,7 @@ import datetime, datetime
 from django.db.models import F
 from django.db.models import Count, Sum
 from django.db import connection
+from django.core.exceptions import ValidationError
 # Create your views here.
 
 class HomecolaboratorView(TemplateView):
@@ -77,7 +78,7 @@ class OrdersColaboboratorView(ListView):
 
 class ServicesColaboratorView(ListView):
     template_name = 'myservices.html'
-    paginate_by = 2
+    paginate_by = 15
     def get_queryset(self):
         queryset = ServicePerColaborator.objects.filter(colaborator=self.request.user)
         return queryset
@@ -100,7 +101,21 @@ class CreateServiceColaboratorView(SuccessMessageMixin, CreateView):
     
     def get_success_url(self):
         return reverse('colaborator:myservices')
+    
+    def get_context_data(self, **kwargs):
+        context = super(CreateServiceColaboratorView, self).get_context_data(**kwargs)
+        context["time"] = datetime.datetime.now()
+        return context
 
     def form_valid(self, form):
-        form.instance.colaborator = self.request.user
+        self.object = form.save(commit=False)
+        self.object.colaborator = self.request.user
+
+        try:
+            self.object.full_clean()
+        except ValidationError:
+            #raise ValidationError("No can do, you have used this name before!")
+            #return self.form_invalid(form)
+            form._errors["service"] = "Este servicio ya esta siendo prestado por ud. por favor edite su actual servicio."
+            return super(CreateServiceColaboratorView, self).form_invalid(form)
         return super(CreateServiceColaboratorView, self).form_valid(form)

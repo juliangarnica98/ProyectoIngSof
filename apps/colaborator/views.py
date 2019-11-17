@@ -78,6 +78,8 @@ class OrdersColaboboratorView(ListView):
 
         order= get_object_or_404(Order, pk=request.POST.get('id'), service__colaborator=request.user)
         order.status = request.POST.get('status')
+        if order.status == 'finalized':
+            order.datetime_finally = datetime.datetime.now()
         order.save()
         return redirect(reverse('colaborator:orders') + queryget)
 

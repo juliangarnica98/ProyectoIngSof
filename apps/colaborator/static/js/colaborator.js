@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $(".deleteservice").click(function(evt){
+    $(".deletepet").click(function(evt){
         evt.preventDefault();
         evt.stopPropagation();
         if(confirm("Esta seguro que desea eliminar este servicio?")){

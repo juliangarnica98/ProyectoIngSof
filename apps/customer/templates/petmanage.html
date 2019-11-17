@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block menu  %}
+    {% include "partials/_menu_customer.html" %}
+{% endblock menu %}
+{% block styles %}
+
+{% endblock styles %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-md-3">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="float-right mt-5 mb-5">
+                        <a href="{% url 'customer:home' %}"><button type="button" class="btn btn-danger">Cancelar</button></a>
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    
+{% endblock scripts %}

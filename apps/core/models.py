@@ -27,7 +27,6 @@ class TypePet(models.Model):
 class Service(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField()
-    pet_types = models.ManyToManyField(TypePet)
     colaborators = models.ManyToManyField(settings.AUTH_USER_MODEL, through='ServicePerColaborator', related_name='colaborators')
 
     def __str__(self):
@@ -48,6 +47,7 @@ class ServicePerColaborator(models.Model):
     rate_type = models.CharField(max_length=255, blank=False, choices=RATE_TYPE, default='hours')
     rate = models.PositiveIntegerField()
     description = models.TextField()
+    pet_types = models.ManyToManyField(TypePet)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     colaborator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 

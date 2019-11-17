@@ -12,7 +12,7 @@ usa estas
 y con esto haces push
 
 git push https://username:password@myrepository.biz/repo.git --all 
-
+git push https://ixervyeisonsuarez:Yeison10*@github.com/MELI2/repo.git --all 
 
 Instalar por requirements
 

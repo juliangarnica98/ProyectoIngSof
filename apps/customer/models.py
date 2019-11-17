@@ -22,6 +22,7 @@ class Order(models.Model):
         ('expired', 'Expirado'),
         ('ready', 'Listo para iniciar'),
         ('inprogress', 'Iniciado'),
+        ('revertPay', 'Declinado, reversar pago'),
         ('finalized', 'Finalizado')
     ]
     price = models.PositiveIntegerField()

@@ -10,7 +10,7 @@ class ServicePerColaboratorForm(forms.ModelForm):
         model = ServicePerColaborator
         exclude = ['colaborator']
 
-        fields = ('coverage_city', 'rate_type', 'rate', 'description', 'service')
+        fields = ('coverage_city', 'rate_type', 'pet_types', 'rate', 'description', 'service')
         widgets = {
             'coverage_city': forms.Select(attrs={
                 'placeholder': 'Ciudad de cobertura',
@@ -19,6 +19,9 @@ class ServicePerColaboratorForm(forms.ModelForm):
             'rate_type': forms.Select(attrs={
                 'placeholder': 'Ciudad de cobertura',
                 'class':'form-control'
+            }),
+            'pet_types': forms.CheckboxSelectMultiple(attrs={
+                
             }),
             'rate': forms.TextInput(attrs={
                 'type' : 'text',
@@ -37,6 +40,7 @@ class ServicePerColaboratorForm(forms.ModelForm):
         labels = {
             'coverage_city': "Ciudad de cobertura",
             'rate_type': "Tipo de cobro",
+            'pet_types': "Tipo de mascota",
             'rate': "Tarifa",
             'description': "Descripción",
             'service': "Servicio",

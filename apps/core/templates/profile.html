@@ -1,0 +1,132 @@
+{% extends 'colaborator/base.html' %}
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static '/css/style.css' %}"/>          
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> {# Adds date-picker required JS and CSS #}
+{% endblock styles %}
+{% block content %}
+<div class="container-fluid">
+    <div class="card mb-3">
+        <div class="card-header">
+        <i class="fas fa-user"></i>
+            Mi perfíl</div>
+        <div class="card-body">
+            {% if messages %}
+            <div class="row">
+              <div class="col-sm-12 col-md-8 offset-md-2">
+                  {% for message in messages %}
+                    <div class="alert alert-success">
+                      <button type="button" class="close" data-dismiss="alert {{ message.tag }}">×</button>
+                      {{ message|striptags }}
+                    </div>
+                  {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+            <div class="col col-sm-12 col-md-6 offset-md-3">
+                <form method="POST" class="register-form" id="register-form" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="idProfile" value="{{ profile.id }}" />
+                    <div class="form-group">
+                        <label for="type_document" class="col-sm-2 col-form-label">Tipo de documento</label>
+                        {{ profile_form.type_document }}
+                        <span class="text-danger">{{ profile_form.type_document.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="document" class="col-sm-2 col-form-label">Documento</label>
+                        {{ profile_form.document }}
+                        <span class="text-danger">{{ profile_form.document.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="first_name" class="col-sm-2 col-form-label">Primer nombre</label>
+                        {{ user_form.first_name }}
+                        <span class="text-danger">{{ user_form.first_name.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name" class="col-sm-2 col-form-label">Apellido</label>
+                        {{ user_form.last_name }}
+                        <span class="text-danger">{{ user_form.last_name.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="username" class="col-sm-2 col-form-label">Username</label>
+                        {{ user_form.username }}
+                        <span class="text-danger">{{ user_form.username.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-sm-2 col-form-label">Email</label>
+                        {{ user_form.email }}
+                        <span class="text-danger">{{ user_form.email.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="birth_date" class="col-sm-2 col-form-label">Fecha de nacimiento</label>
+                        {{ profile_form.birth_date }}
+                        <span class="text-danger">{{ profile_form.birth_date.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="city" class="col-sm-2 col-form-label">Ciudad</label>
+                        {{ profile_form.city }}
+                        <span class="text-danger">{{ profile_form.city.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="location" class="col-sm-2 col-form-label">Dirección</label>
+                        {{ profile_form.location }}
+                        <span class="text-danger">{{ profile_form.location.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile" class="col-sm-2 col-form-label">Celular</label>
+                        {{ profile_form.mobile }}
+                        <span class="text-danger">{{ profile_form.mobile.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="avatar" class="col-sm-2 col-form-label">Foto de perfíl</label>
+                        {{ profile_form.avatar }}
+                        <span class="text-danger">{{ profile_form.avatar.errors|striptags }}</span>
+                    </div>
+                    <!--
+                    <div class="form-group">
+                        <label for="password" class="col-sm-2 col-form-label">Contraseña</label>
+                        {{ user_form.password }}
+                        <span class="text-danger">{{ user_form.password.errors|striptags }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm_password" class="col-sm-2 col-form-label">Confirmar contraseña</label>
+                        {{ user_form.confirm_password }}
+                        <span class="text-danger">{{ user_form.confirm_password.errors|striptags }}</span>
+                    </div>-->
+                    <div class="form-group form-button">
+                        <button class="btn btn-danger">Cancelar</button>
+                        <button class="btn btn-success">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $.datepicker.regional['es'] = {
+            closeText: 'Cerrar',
+            prevText: '< Ant',
+            nextText: 'Sig >',
+            currentText: 'Hoy',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+            dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+            weekHeader: 'Sm',
+            dateFormat: 'yy-mm-dd',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+            };
+            $.datepicker.setDefaults($.datepicker.regional['es']);
+            $('#datetimepicker1').datepicker();
+        });
+    </script>
+{% endblock scripts %}

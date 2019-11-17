@@ -24,7 +24,7 @@
               <div class="col-sm-12 col-md-8 offset-md-2">
                   {% for message in messages %}
                     <div class="alert alert-success">
-                      <button type="button" class="close" data-dismiss="alert">×</button>
+                      <button type="button" class="close" data-dismiss="alert {{ message.tag }}">×</button>
                       {{ message|striptags }}
                     </div>
                   {% endfor %}
@@ -53,8 +53,8 @@
                             <td>{{ typePay|get_item:service.rate_type }}</td>
                             <td>{{ service.rate }}</td>
                             <td>{{ service.coverage_city }}</td>
-                            <td></td>
-                            <td></td>
+                            <td><a href="{% url 'colaborator:updateservice' pk=service.id %}"><i class="fas fa-fw fa-edit"></i></a></td>
+                            <td><a href="#" class="deleteservice" data-urldelete="{% url 'colaborator:deleteservice' pk=service.id %}"><i class="fas fa-fw fa-trash"></i></a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -105,7 +105,7 @@
 <script src="{% static '/js/datatables/jquery.dataTables.js' %}"></script>
 <script src="{% static '/js/datatables/dataTables.bootstrap4.js' %}"></script>
 
-
+<script src="{% static '/js/colaborator.js' %}"></script>
 <!-- Custom scripts for all pages-->
 <script src="{% static 'js/sb-admin/sb-admin.min.js' %}"></script>
 <script>

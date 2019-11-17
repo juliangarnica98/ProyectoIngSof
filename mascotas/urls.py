@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('apps.core.urls')),
     path('admin/', admin.site.urls),
     path('authenticate/', include('apps.authenticate.urls')),
-    path('colaborator/', include('apps.colaborator.urls'))
+    path('colaborator/', include('apps.colaborator.urls')),
+    path('customer/', include('apps.customer.urls'))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.views import View
-from django.views.generic import TemplateView, ListView, CreateView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy, reverse
 from apps.core.models import *
@@ -48,7 +48,7 @@ class OrdersColaboboratorView(ListView):
             elif fil == 'today':
                 today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
                 today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-                queryset = Order.objects.filter(service__colaborator=self.request.user, datetime_booking__range=(today_min, today_max), status='ready').annotate(payColaborator=F('price') - F('utility'))
+                queryset = Order.objects.filter(service__colaborator=self.request.user, datetime_booking__range=(today_min, today_max)).annotate(payColaborator=F('price') - F('utility')).order_by('id')
         else:
             queryset = Order.objects.filter(service__colaborator=self.request.user).order_by('status').annotate(payColaborator=F('price') - F('utility'))
         return queryset
@@ -62,6 +62,7 @@ class OrdersColaboboratorView(ListView):
             'ready': 'Listo para iniciar',
             'expired':'Expirado',
             'inprogress':'Iniciado',
+            'revertPay': 'Declinado, reversar pago',
             'finalized':'Finalizado'
         }
         context = super().get_context_data(**kwargs)
@@ -71,16 +72,20 @@ class OrdersColaboboratorView(ListView):
         return context
     
     def post(self, request, *args, **kwargs):
+        queryget = ""
+        if 'filter' in self.request.GET:
+            queryget = "?filter=%s" % self.request.GET.get('filter')       
+
         order= get_object_or_404(Order, pk=request.POST.get('id'), service__colaborator=request.user)
         order.status = request.POST.get('status')
         order.save()
-        return redirect(reverse('colaborator:orders'))
+        return redirect(reverse('colaborator:orders') + queryget)
 
 class ServicesColaboratorView(ListView):
     template_name = 'myservices.html'
     paginate_by = 15
     def get_queryset(self):
-        queryset = ServicePerColaborator.objects.filter(colaborator=self.request.user)
+        queryset = ServicePerColaborator.objects.filter(colaborator=self.request.user).order_by('id')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -96,7 +101,7 @@ class ServicesColaboratorView(ListView):
 class CreateServiceColaboratorView(SuccessMessageMixin, CreateView):
     model = ServicePerColaborator
     form_class = ServicePerColaboratorForm
-    template_name = 'createservicecolaborator.html'
+    template_name = 'servicecolaborator.html'
     success_message = '¡Se ha asignado un nuevo servicio en su cuenta!'
     
     def get_success_url(self):
@@ -119,3 +124,20 @@ class CreateServiceColaboratorView(SuccessMessageMixin, CreateView):
             form._errors["service"] = "Este servicio ya esta siendo prestado por ud. por favor edite su actual servicio."
             return super(CreateServiceColaboratorView, self).form_invalid(form)
         return super(CreateServiceColaboratorView, self).form_valid(form)
+    
+class UpdateServiceColaboratorView(UpdateView):
+    model = ServicePerColaborator
+    form_class = ServicePerColaboratorForm
+    template_name = 'servicecolaborator.html'
+    success_message = '¡Se ha actualizado el servicio en su cuenta!'
+    
+    def get_success_url(self):
+        return reverse('colaborator:myservices')
+
+class DeleteServiceColaboratorView(DeleteView):
+    model = ServicePerColaborator
+    
+    def get(self, request, pk):
+        service = get_object_or_404(ServicePerColaborator, pk=pk)
+        service.delete()
+        return redirect(reverse('colaborator:myservices'))

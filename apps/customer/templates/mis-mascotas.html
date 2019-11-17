@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block menu  %}
+    {% include "partials/_menu_customer.html" %}
+{% endblock menu %}
+{% block styles %}
+
+{% endblock styles %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% for pet in pets %}
+            <div class="card mt-2 ml-5" style="width: 18rem;">
+                <img class="card-img-top" src="{{ pet.pet_image.url }}" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text"><b>Nombre: </b>{{ pet.name }}</p>
+                    <p class="card-text"><b>Edad: </b>{{ pet.edad }}</p>
+                    <p class="card-text"><button class="btn btn-primary">Contratar Servicio</button></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row mt-5">
+            <button class="btn btn-default">Crear nueva mascota</button> 
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+
+{% endblock scripts %}

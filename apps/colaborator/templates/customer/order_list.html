@@ -63,6 +63,19 @@
                         <button class="btn btn-success" name="status" value="accepted"><i class="fas fa-fw fa-check"></i></button>
                         <button class="btn btn-danger" name="status" value="rejected"><i class="fas fa-fw fa-times"></i></button>
                       </form>
+                      {% elif service.status == 'ready' %}
+                      <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ service.id }}"/>
+                        <button class="btn btn-success" name="status" value="inprogress"><i class="fas fa-fw fa-check"></i></button>
+                        <button class="btn btn-danger" name="status" value="revertPay"><i class="fas fa-fw fa-times"></i></button>
+                      </form>
+                      {% elif service.status == 'inprogress' %}
+                      <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ service.id }}"/>
+                        <button class="btn btn-primary" name="status" value="finalized"><i class="fas fa-fw fa-hand-peace"></i>Terminar</button>
+                      </form>
                       {% endif %}
                     </td>
                     <td>{{ service.service.service.name }}</td>

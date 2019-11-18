@@ -5,6 +5,7 @@ from .models import *
 from apps.core.models import *
 from .forms import *
 from django.core.exceptions import ValidationError
+from django.contrib import messages 
 # Create your views here.
 
 class HomeCustomer(TemplateView):
@@ -58,5 +59,17 @@ class ContractServiceView(View):
         }
         pet = get_object_or_404(Pet, pk=kwargs['pk'])
         queryset = ServicePerColaborator.objects.filter(pet_types=pet.pet_type)
-        return render(request,'contract.html',{'object_list':queryset, 'typePay':typePay, 'formcontact':OrderForm})
+        return render(request,'contract.html',{'object_list':queryset, 'typePay':typePay, 'formcontact':OrderForm, 'pet':pet})
     
+    def post(self, request, *args, **kwargs):
+        service = get_object_or_404(ServicePerColaborator, pk=request.POST.get('id_service'))
+        pet = get_object_or_404(Pet, pk=request.POST.get('id_pet'))
+        newOrder = Order(datetime_booking=request.POST.get('datetime_booking'), status="request", pet=pet, service=service)
+        if service.rate_type == 'full':
+            newOrder.price = service.rate
+        else:
+            newOrder.hours_contract = int(request.POST.get('hours_contract'))
+            newOrder.price = service.rate * int(request.POST.get('hours_contract'))
+        newOrder.save()
+        messages.add_message(request, messages.SUCCESS, "Orden creada exitosamente, si desea ver su estado Mis ordenes brindara toda la información.")
+        return redirect(reverse('customer:contractservice', kwargs={'pk': pet.id}))

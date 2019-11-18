@@ -11,6 +11,11 @@ class PetForm(forms.ModelForm):
             'edad': forms.NumberInput(attrs={'placeholder': 'Edad','class':'form-control'}),
             'pet_type': forms.Select(attrs={'class':'form-control'}),
         }
+        labels = {
+            'name': "Nombre",
+            'edad': "Edad",
+            'pet_type': "Tipo de mascota"
+        }
 
 class OrderForm(forms.ModelForm):
     class Meta():
@@ -19,4 +24,8 @@ class OrderForm(forms.ModelForm):
         widgets = {
             'datetime_booking': forms.DateInput(attrs={'placeholder': 'Fecha de contratacion','class':'form-control booking'}),
             'hours_contract': forms.NumberInput(attrs={'placeholder': 'Horas a contratar','class':'form-control hours_contract'}),
+        }
+        labels = {
+            'datetime_booking': "Fecha agendamiento",
+            'hours_contract': "Horas de contratación",
         }

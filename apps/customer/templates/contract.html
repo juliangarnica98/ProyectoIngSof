@@ -12,17 +12,39 @@
         <div class="row mt-5">
             <a href="{% url 'customer:home' %}"><button type="button" class="btn btn-default">Regresar</button></a>
         </div>
+        <div  class="row mt-5">
+            {% if messages %}
+            <div class="row">
+              <div class="col-sm-12 col-md-8 offset-md-2">
+                  {% for message in messages %}
+                    <div class="alert alert-success">
+                      <button type="button" class="close" data-dismiss="alert {{ message.tag }}">×</button>
+                      {{ message|striptags }}
+                    </div>
+                  {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+        </div>
         <div class="row">
             {% for service in object_list %}
             <div class="card text-white bg-light  mb-3 ml-5 mt-5" style="min-width: 30rem;max-width: 30rem;">
                 <div class="card-header" style="color:black;">{{ service.service.name }}</div>
                 <div class="card-body">
+                    <p class="card-text">
+                        <img src="{{ service.colaborator.profile.avatar.url }}" width="70" alt="profile_photo" class="img-thumbnail rounded-circle">
+                    </p>
+                    <p class="card-text">
+                        <b>Prestador del servicio:</b> {{ service.colaborator }}.
+                    </p>
                     <p class="card-text"><b>Descripción</b>{{ service.description }}.</p>
-                    <p class="card-text"><b>Prestador del servicio:</b> {{ service.colaborator }}.</p>
                     <p class="card-text"><b>Tipo de tarifa:</b> {{ typePay|get_item:service.rate_type }}.</p>
                     <p class="card-text"><b>Tarifa segun tipo:</b> {{ service.rate|intcomma }}.</p>
                     <h5 class="card-title mt-2">Solicitar servicio</h5>
-                    <form>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id_service" value="{{ service.id }}" />
+                        <input type="hidden" name="id_pet" value="{{ pet.id }}" />
                         {% for field in formcontact %}
                         <div class="form-group">
                             {% if field.name == 'hours_contract' and service.rate_type == 'full' %}

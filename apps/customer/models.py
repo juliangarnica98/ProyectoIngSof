@@ -16,10 +16,9 @@ class Pet(models.Model):
 class Order(models.Model):
     STATUS_ORDER = [
         ('request', 'Solicitado'),
-        ('accepted', 'Aceptado'),
         ('waitpayment', 'Esperando pago'),
         ('rejected', 'Rechazado'),
-        ('expired', 'Expirado'),
+        ('cancelled', 'Cancelado'),
         ('ready', 'Listo para iniciar'),
         ('inprogress', 'Iniciado'),
         ('revertPay', 'Declinado, reversar pago'),

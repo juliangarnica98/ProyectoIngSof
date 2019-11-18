@@ -1,5 +1,10 @@
-{% extends 'colaborator/base.html' %}
+{% extends filebase %}
 {% load static %}
+{% block menu  %}
+    {% if filebase == 'base.html' %}
+        {% include "partials/_menu_anonymous.html" %}
+    {% endif %}
+{% endblock menu %}
 {% block styles %}
     <link rel="stylesheet" href="{% static '/css/style.css' %}"/>          
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> {# Adds date-picker required JS and CSS #}
@@ -9,14 +14,14 @@
     <div class="card mb-3">
         <div class="card-header">
         <i class="fas fa-user"></i>
-            Mi perfíl</div>
+            {{ titleUser }}</div>
         <div class="card-body">
             {% if messages %}
             <div class="row">
               <div class="col-sm-12 col-md-8 offset-md-2">
                   {% for message in messages %}
                     <div class="alert alert-success">
-                      <button type="button" class="close" data-dismiss="alert {{ message.tag }}">×</button>
+                      <button type="button" class="close" data-dismiss="alert">×</button>
                       {{ message|striptags }}
                     </div>
                   {% endfor %}
@@ -82,20 +87,23 @@
                         {{ profile_form.avatar }}
                         <span class="text-danger">{{ profile_form.avatar.errors|striptags }}</span>
                     </div>
-                    <!--
+                    {% if user_form.password is not None %}
                     <div class="form-group">
                         <label for="password" class="col-sm-2 col-form-label">Contraseña</label>
                         {{ user_form.password }}
                         <span class="text-danger">{{ user_form.password.errors|striptags }}</span>
                     </div>
+                    {% endif %}
+                    {% if user_form.confirm_password is not None %}
                     <div class="form-group">
                         <label for="confirm_password" class="col-sm-2 col-form-label">Confirmar contraseña</label>
                         {{ user_form.confirm_password }}
                         <span class="text-danger">{{ user_form.confirm_password.errors|striptags }}</span>
-                    </div>-->
-                    <div class="form-group form-button">
-                        <button class="btn btn-danger">Cancelar</button>
-                        <button class="btn btn-success">Guardar</button>
+                    </div>
+                    {% endif %}
+                    <div class="form-group ">
+                        <a href="{% url backform %}" class="btn btn-danger">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Guardar</button>
                     </div>
                 </form>
             </div>

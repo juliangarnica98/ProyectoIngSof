@@ -5,6 +5,7 @@ from .forms import *
 from .models import *
 from django.contrib import messages 
 from django.urls import reverse_lazy, reverse
+from django.contrib.auth.models import User, Group
 # Create your views here.
 
 class HomeView(TemplateView):
@@ -21,6 +22,9 @@ class MyProfile(View):
         user_form = UserForm(instance=request.user)
         return render(request,'profile.html',
                           { 'user_form':user_form,
+                            'titleUser':'Mi perfil',
+                            'filebase': 'colaborator/base.html',
+                            'backform': 'colaborator:home',
                             'profile': profile,
                             'profile_form':profile_form})
 
@@ -32,8 +36,6 @@ class MyProfile(View):
         profile_form = UserProfileInfoForm(data=request.POST, files=request.FILES or None,instance=profile or None)
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
-            #if user.password:
-            #    user.set_password(user.password)
             user.save()
             profile = profile_form.save(commit=False)
             profile.user = user
@@ -44,5 +46,46 @@ class MyProfile(View):
             return redirect(reverse('core:myprofile'))
         else:
             return render(request,'profile.html',
-                          {'user_form':user_form,
-                           'profile_form':profile_form})
+                          { 'user_form':user_form,
+                            'titleUser':'Mi perfil',
+                            'filebase': 'colaborator/base.html',
+                            'backform': 'colaborator:home',
+                            'profile_form':profile_form})
+
+class NewProfile(View):
+    def get(self,request, *args, **kwargs):
+        user_form = RegisterForm()
+        profile_form = UserProfileInfoForm()
+        titleUser = 'Colaboradores' if kwargs['typeuser'] == 'collaborators' else 'Cliente'
+        return render(request,'profile.html',
+                          { 'user_form':user_form,
+                            'titleUser':titleUser,
+                            'filebase': 'base.html',
+                            'backform': 'core:home',
+                            'profile_form':profile_form})
+
+    def post(self,request, *args, **kwargs):
+        user_form = RegisterForm(data=request.POST)
+        profile_form = UserProfileInfoForm(data=request.POST, files=request.FILES or None)
+        titleUser = 'Colaboradores' if kwargs['typeuser'] == 'collaborators' else 'Cliente'
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save(commit=False)
+            user.set_password(request.POST.get('password'))
+            user.save()
+            group = Group.objects.get(name=kwargs['typeuser'])
+            user.groups.add(group)
+            user.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            if 'profile_image' in request.FILES:
+                profile.profile_image = request.FILES['profile_image']
+            profile.save()
+            messages.add_message(request, messages.SUCCESS, "Se ha registrado ahora puede autenticarse.")
+            return redirect(reverse('authenticate:login'))
+        else:
+            return render(request,'profile.html',
+                          { 'user_form':user_form,
+                            'titleUser':titleUser,
+                            'filebase': 'base.html',
+                            'backform': 'core:home',
+                            'profile_form':profile_form})

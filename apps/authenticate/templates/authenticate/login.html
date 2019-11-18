@@ -53,10 +53,22 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                 {% if form.errors %}
+                {% if form.errors %}
                     <div class="alert alert-danger">
                         <button type="button" class="close" data-dismiss="alert">×</button>
                         {{ form.non_field_errors |striptags }}
+                    </div>
+                {% endif %}
+                {% if messages %}
+                    <div class="row">
+                        <div class="col-sm-12 col-md-8 offset-md-2">
+                            {% for message in messages %}
+                                <div class="alert alert-success">
+                                <button type="button" class="close" data-dismiss="alert">×</button>
+                                {{ message|striptags }}
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endif %}
                 <div class="card card-signin my-5">

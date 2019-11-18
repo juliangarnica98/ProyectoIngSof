@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% block menu  %}
+    {% include "partials/_menu_customer.html" %}
+{% endblock menu %}
+{% block styles %}
+    <link href="{% static '/css/starts.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> {# Adds date-picker required JS and CSS #}
+{% endblock styles %}
+{% block content %}
+<div class="container">  
+    {% for typeorder in orderstype %}
+    <div class="row mt-5">
+        <div class="col-10 offset-1">
+            <fieldset class="border p-2">
+                <legend class="scheduler-border">{{ typeorder.legend }}</legend>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            {% for header in typeorder.headers %}
+                                {% if header == 'Acciones' %}
+                                <th scope="col" colspan="{{ typeorder.spanactions }}">{{ header }}</th>
+                                {% else %}
+                                <th scope="col">{{ header }}</th>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if typeorder.status == 'request' %}
+                            {% if typeorder.orders.count > 0 %}
+                                {% for order in typeorder.orders %}
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="id" value="{{ order.id }}" />
+                                        <tr>
+                                            <th scope="row">{{ order.id }}</th>
+                                            <td>{{ order.service.service.name }}</td>
+                                            <td>{{ order.datetime_booking }}</td>
+                                            <td>{{ order.price|intcomma  }}</td>
+                                            <td>{{ order.pet.name }}</td>
+                                            <td><button type="submit" class="btn btn-danger" name="status" value="cancelled">Cancelar</button></td>
+                                        </tr>
+                                    </form>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="{{ typeorder.headers|length }}">No encontramos registros asociados</td>
+                                </tr>
+                            {% endif %}
+                        {% elif typeorder.status == 'waitpayment' %}
+                            {% if typeorder.orders.count > 0 %}
+                                {% for order in typeorder.orders %}
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="id" value="{{ order.id }}" />
+                                        <tr>
+                                            <th scope="row">{{ order.id }}</th>
+                                            <td>{{ order.service.service.name }}</td>
+                                            <td>{{ order.datetime_booking }}</td>
+                                            <td>{{ order.price|intcomma  }}</td>
+                                            <td>{{ order.pet.name }}</td>
+                                            <td><button type="submit" class="btn btn-danger" name="status" value="cancelled">Cancelar</button></td>
+                                            <td><button type="submit" class="btn btn-success" name="status" value="ready">Pagar</button></td>
+                                        </tr>
+                                    </form>
+                                {% endfor %}
+                            {% else %}
+                                <tr>   
+                                    <td colspan="{{ typeorder.headers|length }}">No encontramos registros asociados</td>
+                                </tr>
+                            {% endif %}
+                        {% elif typeorder.status == 'cancelled' %}
+                            {% if typeorder.orders.count > 0 %}
+                                {% for order in typeorder.orders %}
+                                    <tr>
+                                        <th scope="row">{{ order.id }}</th>
+                                        <td>{{ order.service.service.name }}</td>
+                                        <td>{{ order.datetime_booking }}</td>
+                                        <td>{{ order.price|intcomma  }}</td>
+                                        <td>{{ order.pet.name }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="{{ typeorder.headers|length }}">No encontramos registros asociados</td>
+                                </tr>
+                            {% endif %}
+                        {% elif typeorder.status == 'rejected' %}
+                            {% if typeorder.orders.count > 0 %}
+                                {% for order in typeorder.orders %}
+                                    <tr>
+                                        <th scope="row">{{ order.id }}</th>
+                                        <td>{{ order.service.service.name }}</td>
+                                        <td>{{ order.pet.name }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="{{ typeorder.headers|length }}">No encontramos registros asociados</td>
+                                </tr>
+                            {% endif %}
+                        {% elif typeorder.status == 'ready' %}
+                            {% if typeorder.orders.count > 0 %}
+                                {% for order in typeorder.orders %}
+                                    <tr>
+                                        <th scope="row">{{ order.id }}</th>
+                                        <td>{{ order.service.service.name }}</td>
+                                        <td>{{ order.datetime_booking }}</td>
+                                        <td>{{ order.pet.name }}</td>
+                                        <td><a href="{% url 'customer:generatebill' order=order.id %}"><i class="fas fa-fw fa-file-pdf"></i></a></td>
+                                        <td><button type="submit" class="btn btn-danger" name="status" value="revertPay">Reversar pago</button></td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="{{ typeorder.headers|length }}">No encontramos registros asociados</td>
+                                </tr>
+                            {% endif %}
+                        {% elif typeorder.status == 'inprogress' %}
+                            {% if typeorder.orders.count > 0 %}
+                                {% for order in typeorder.orders %}
+                                    <tr>
+                                        <th scope="row">{{ order.id }}</th>
+                                        <td>{{ order.service.service.name }}</td>
+                                        <td>{{ order.datetime_booking }}</td>
+                                        <td>{{ order.pet.name }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="{{ typeorder.headers|length }}">No encontramos registros asociados</td>
+                                </tr>
+                            {% endif %}
+                        {% elif typeorder.status == 'revertPay' %}
+                            {% if typeorder.orders.count > 0 %}
+                                {% for order in typeorder.orders %}
+                                    <tr>
+                                        <th scope="row">{{ order.id }}</th>
+                                        <td>{{ order.service.service.name }}</td>
+                                        <td>{{ order.pet.name }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="{{ typeorder.headers|length }}">No encontramos registros asociados</td>
+                                </tr>
+                            {% endif %}
+                        {% elif typeorder.status == 'finalized' %}
+                            {% if typeorder.orders.count > 0 %}
+                                {% for order in typeorder.orders %}
+                                    <tr>
+                                        <th scope="row">{{ order.id }}</th>
+                                        <td>{{ order.service.service.name }}</td>
+                                        <td>{{ order.datetime_booking }}</td>
+                                        <td>{{ order.price|intcomma  }}</td>
+                                        <td>{{ order.pet.name }}</td>
+                                        <td><td><a href="{% url 'customer:generatebill' order=order.id %}"><i class="fas fa-fw fa-file-pdf"></i></a></td></td>
+                                        <td>
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="id" value="{{ order.id }}" />
+                                                <input type="hidden" name="status" value="{{ order.status }}" />
+                                                <div class="rating mr-5">
+                                                    <input type="radio" id="star5_{{ order.id }}" name="rating{{ order.id }}" value="5" {% if order.score == 5 %}checked disabled{% endif %}/><label for="star5_{{ order.id }}" title="Cinco estrellas">5 stars</label>
+                                                    <input type="radio" id="star4_{{ order.id }}" name="rating{{ order.id }}" value="4" {% if order.score == 4 %}checked disabled{% endif %}/><label for="star4_{{ order.id }}" title="Cuatro estrellas">4 stars</label>
+                                                    <input type="radio" id="star3_{{ order.id }}" name="rating{{ order.id }}" value="3" {% if order.score == 3 %}checked disabled{% endif %}/><label for="star3_{{ order.id }}" title="Tres estrellas">3 stars</label>
+                                                    <input type="radio" id="star2_{{ order.id }}" name="rating{{ order.id }}" value="2" {% if order.score == 2 %}checked disabled{% endif %}/><label for="star2_{{ order.id }}" title="Dos estrellas">2 stars</label>
+                                                    <input type="radio" id="star1_{{ order.id }}" name="rating{{ order.id }}" value="1" {% if order.score == 1 %}checked disabled{% endif %}/><label for="star1_{{ order.id }}" title="Uno estrellas">1 star</label>
+                                                </div>
+                                                {% if order.score is None %}
+                                                    <button type="submit" class="btn btn-primary">Calificar</button>
+                                                {% endif %}
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="{{ typeorder.headers|length }}">No encontramos registros asociados</td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </fieldset>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+ 
+{% endblock scripts %}

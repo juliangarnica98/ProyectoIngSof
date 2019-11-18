@@ -3,6 +3,7 @@
 {% load humanize %}
 {% load utilities %}
 {% block styles %}
+<link href="{% static '/css/starts.css' %}" rel="stylesheet">
 <link href="{% static '/css/colaborator.css' %}" rel="stylesheet">
 {% endblock styles %}
 {% block content %}
@@ -28,7 +29,7 @@
                   <tr>
                     <th>ID</th>
                     <th>Status</th>
-                     <th>Servicio</th>
+                    <th>Servicio</th>
                     <th>Agendada</th>
                     <th>Fecha finalización</th>
                     <th>Precio</th>
@@ -60,7 +61,7 @@
                       <form method="post">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{ service.id }}"/>
-                        <button class="btn btn-success" name="status" value="accepted"><i class="fas fa-fw fa-check"></i></button>
+                        <button class="btn btn-success" name="status" value="waitpayment"><i class="fas fa-fw fa-check"></i></button>
                         <button class="btn btn-danger" name="status" value="rejected"><i class="fas fa-fw fa-times"></i></button>
                       </form>
                       {% elif service.status == 'ready' %}

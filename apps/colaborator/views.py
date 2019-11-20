@@ -30,7 +30,13 @@ class HomecolaboratorView(TemplateView):
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
         todayOrders = Order.objects.filter(service__colaborator=self.request.user, datetime_booking__range=(today_min, today_max), status='ready').annotate(payColaborator=F('price') - F('utility')).count()
         with connection.cursor() as cursor:
-            cursor.execute("select distinct(DATE(datetime_finally)),sum(price-utility) from customer_order where status='finalized' group by DATE(datetime_finally)")
+            queryToGraph = """select distinct(DATE(customer_order.datetime_finally)),sum(customer_order.price-customer_order.utility) 
+                                from customer_order inner join core_servicepercolaborator on customer_order.service_id = core_servicepercolaborator.id 
+                                where customer_order.status='finalized' 
+                                and core_servicepercolaborator.colaborator_id = %s
+                                group by DATE(customer_order.datetime_finally)
+                                order by date ASC""" % self.request.user.id
+            cursor.execute(queryToGraph)
             context["dataGraphic"] = cursor.fetchall()
         
         context["ordersThisWeek"] = orders
